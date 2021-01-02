@@ -2,11 +2,9 @@
 #include <iostream>
 #include <windows.h>
 
-/*
-	HOOK WITH "PUSH RET" TECHNIQUE
-*/
 
 DWORD jmpBack;
+
 
 bool Hook(void* toHook, void* ourFunct, int len) {
 
@@ -18,6 +16,7 @@ bool Hook(void* toHook, void* ourFunct, int len) {
 	VirtualProtect(toHook, len, 0x40, &curProtection);
 
 	memset(toHook, 0x90, len);
+
 
 	DWORD absoluteAddress = (DWORD)ourFunct;
 
@@ -34,6 +33,7 @@ bool Hook(void* toHook, void* ourFunct, int len) {
 void __declspec(naked) ourFunct() {
 	std::cout << "[HOOKED] ";
 	__asm {
+		pop ecx
 		add ecx, ecx
 		mov edx, [ebp - 8]
 		jmp[jmpBack]
